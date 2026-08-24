@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro de cliente · BillCapital</title>
+<style>
+  :root{ --bc:#1F2937; --bc2:#2f6fb0; --acc:#c7f24a; --ok:#128a5b; --line:#e3e8ef; --bg:#eef1f5; --txt:#1c2733; --mut:#6b7a8c; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+  .wrap{max-width:540px;margin:0 auto;padding:26px 18px 40px;min-height:100vh;display:flex;flex-direction:column}
+  .logo{display:flex;justify-content:center;margin:6px 0 18px}
+  .logo img{height:34px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 30px rgba(20,40,70,.08);overflow:hidden}
+  /* Banner del MIC — bien visible, no escondido */
+  .micbar{display:flex;align-items:center;gap:12px;padding:16px 20px;background:linear-gradient(135deg,#1F2937,#33465c);color:#fff}
+  .avatar{width:42px;height:42px;border-radius:50%;background:var(--acc);color:#1F2937;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex:0 0 auto}
+  .micbar .t{font-size:12px;opacity:.85;line-height:1.2}
+  .micbar .n{font-size:16px;font-weight:800}
+  .lock{display:flex;justify-content:center;margin:18px 0 6px}
+  .lock div{width:40px;height:40px;border-radius:50%;background:#1F2937;color:#fff;display:flex;align-items:center;justify-content:center}
+  .sub{text-align:center;color:#334;font-weight:600;margin:0 0 6px}
+  .body{padding:6px 22px 20px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+  .hint{font-weight:400;color:var(--mut)}
+  input,select{width:100%;padding:12px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--bc2);box-shadow:0 0 0 3px rgba(47,111,176,.15)}
+  .chk{display:flex;gap:9px;align-items:flex-start;margin-top:16px;font-size:13px;color:#334}
+  .chk input{width:18px;height:18px;margin-top:1px;flex:0 0 auto}
+  .chk a{color:var(--bc2);cursor:pointer;text-decoration:underline}
+  .sec{display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:12px;color:var(--mut);background:#f7fafd;border:1px dashed #d8e6f5;border-radius:10px;padding:10px 12px}
+  button.go{margin-top:18px;width:100%;padding:14px;border:0;border-radius:11px;background:#1F2937;color:#fff;font-size:15px;font-weight:800;letter-spacing:.5px;cursor:pointer}
+  button.go:disabled{opacity:.5;cursor:not-allowed}
+  .imp{margin-top:14px;font-size:12px;color:var(--mut);line-height:1.5}
+  .imp b{color:#334}
+  .foot{margin-top:auto;padding-top:26px;text-align:center;color:var(--mut);font-size:12px}
+  .foot .pw{font-weight:700;color:#334}
+  .ok{display:none;padding:30px 22px;text-align:center}
+  .ok .c{width:54px;height:54px;border-radius:50%;background:#e7f6ef;color:var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px}
+  /* Modal terminos */
+  .ov{display:none;position:fixed;inset:0;background:rgba(15,25,40,.5);align-items:center;justify-content:center;padding:16px;z-index:9}
+  .modal{background:#fff;max-width:560px;width:100%;max-height:82vh;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .modal h3{margin:0;padding:16px 20px;border-bottom:1px solid var(--line);font-size:16px}
+  .modal .mc{padding:16px 20px;overflow:auto;font-size:13px;color:#334;line-height:1.55}
+  .modal .mc h4{margin:16px 0 4px;font-size:13px}
+  .modal .mf{padding:12px 20px;border-top:1px solid var(--line);text-align:right}
+  .modal .mf button{padding:9px 16px;border:0;border-radius:9px;background:#1F2937;color:#fff;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">
+      <!-- Produccion: descargar y auto-hospedar este logo en billcapital.com -->
+      <img src="https://pruff-public.s3.amazonaws.com/company-logos/74.png" alt="BillCapital"
+           onerror="this.replaceWith(Object.assign(document.createElement('b'),{textContent:'BillCapital',style:'font-size:20px'}))">
+    </div>
+
+    <div class="card">
+      <!-- MIC destacado -->
+      <div class="micbar">
+        <div class="avatar" id="micAv">PM</div>
+        <div>
+          <div class="t">Te registras con tu MIC</div>
+          <div class="n" id="micName">Paulina Muñoz</div>
+        </div>
+      </div>
+
+      <div class="body" id="form">
+        <div class="lock"><div>🔒</div></div>
+        <p class="sub">Ingresa tus credenciales del SII</p>
+
+        <label>Nombre Cliente</label>
+        <input id="razon" placeholder="Razón social" autocomplete="off">
+
+        <label>País</label>
+        <select id="pais">
+          <option value="1">Chile</option>
+          <option value="2">Colombia</option>
+        </select>
+
+        <label id="lblId">RUT Cliente</label>
+        <input id="ident" placeholder="76000000-0" autocomplete="off">
+
+        <div id="claveBox">
+          <label>Contraseña SII</label>
+          <input id="clave" type="password" placeholder="••••••••" autocomplete="off">
+        </div>
+
+        <div class="sec">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V5l7-3z" stroke="#2f6fb0" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="#2f6fb0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Tus credenciales viajan <b>cifradas</b> y se guardan de forma segura. Solo se usan para habilitar tus documentos; nunca se comparten ni se muestran.</span>
+        </div>
+
+        <label class="chk">
+          <input type="checkbox" id="acepto" onchange="document.getElementById('btn').disabled=!this.checked">
+          <span>He leído y estoy de acuerdo con los <a onclick="document.getElementById('ov').style.display='flex'">términos y condiciones</a></span>
+        </label>
+
+        <button class="go" id="btn" disabled onclick="enviar()">GUARDAR</button>
+
+        <p class="imp"><b>Importante:</b> este formulario fue solicitado por tu MIC <b id="micName2">Paulina Muñoz</b> de BillCapital. Si no conoces a esta persona, verifica con tu MIC que este sea el sitio correcto.</p>
+      </div>
+
+      <div class="ok" id="okBox">
+        <div class="c">✓</div>
+        <h3 style="margin:0 0 6px">¡Listo!</h3>
+        <p style="margin:0;color:var(--mut);font-size:13px">Recibimos tus datos de forma segura. Tu ejecutivo continuará con el proceso.</p>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div>Powered by <span class="pw">BillCapital</span></div>
+      <div style="margin-top:4px">BillCapital 2026</div>
+    </div>
+  </div>
+
+  <!-- Modal Terminos (BillCapital) -->
+  <div class="ov" id="ov">
+    <div class="modal">
+      <h3>Términos y Condiciones · BillCapital</h3>
+      <div class="mc">
+        <p>Al registrar tus datos aceptas estos términos respecto del tratamiento de tu información y de las credenciales del Servicio de Impuestos Internos (SII) o su equivalente en tu país.</p>
+        <h4>1. Autorización de uso de credenciales</h4>
+        <p>Autorizas a BillCapital a utilizar las credenciales que ingresas para acceder, exclusivamente, a la información tributaria y de documentos electrónicos necesaria para evaluar y habilitar tus operaciones de financiamiento (factoring).</p>
+        <h4>2. Confidencialidad y cifrado</h4>
+        <p>Tus credenciales se transmiten y almacenan de forma <b>cifrada</b>. BillCapital no las divulga a terceros no autorizados ni las muestra a otros usuarios. El acceso es restringido y auditado.</p>
+        <h4>3. Proveedor tecnológico</h4>
+        <p>Para prestar el servicio, BillCapital procesa esta información y la comparte con su proveedor tecnológico de sincronización tributaria, únicamente con la finalidad descrita en el punto 1.</p>
+        <h4>4. Finalidad y conservación</h4>
+        <p>La información se usa para la evaluación, cursado y seguimiento de tus operaciones. Se conserva mientras exista relación comercial o obligación legal que lo requiera.</p>
+        <h4>5. Revocación</h4>
+        <p>Puedes solicitar la actualización o eliminación de tus credenciales en cualquier momento contactando a tu ejecutivo, sin afectar las operaciones ya cursadas.</p>
+        <h4>6. Veracidad</h4>
+        <p>Declaras que los datos ingresados son verídicos y que estás facultado para entregarlos.</p>
+        <p style="color:var(--mut);margin-top:14px">Estos términos podrán actualizarse; la versión vigente estará disponible en el sitio de BillCapital.</p>
+      </div>
+      <div class="mf"><button onclick="document.getElementById('ov').style.display='none'">Entendido</button></div>
+    </div>
+  </div>
+
+<script>
+  // ===== Config =====
+  var EP = "https://ybugxmeiwobzrdeuhlzl.supabase.co/functions/v1/registroClientePublico";
+  var ANON = ""; // pega aqui la anon/publishable key de Supabase para produccion
+  // token de la URL: ?t=<token>  o  /r/<token>
+  var TOKEN = new URLSearchParams(location.search).get('t') || (location.pathname.match(/\/r\/([0-9a-f-]{10,})/i)||[])[1] || "";
+
+  var pais=document.getElementById('pais'), lbl=document.getElementById('lblId'),
+      claveBox=document.getElementById('claveBox'), ident=document.getElementById('ident');
+  function setMic(n){ n=n||"tu MIC"; var ini=n.split(/\s+/).map(function(w){return w[0]||"";}).join("").slice(0,2).toUpperCase();
+    document.getElementById('micName').textContent=n; document.getElementById('micName2').textContent=n; document.getElementById('micAv').textContent=ini; }
+  function sync(){ var cl = pais.value==='1';
+    lbl.textContent = cl ? 'RUT Cliente' : 'NIT Cliente';
+    ident.placeholder = cl ? '76000000-0' : '900000000-0';
+    claveBox.style.display = cl ? 'block' : 'none'; }
+  pais.addEventListener('change', sync); sync();
+
+  function headers(){ var h={'Content-Type':'application/json'}; if(ANON){h['apikey']=ANON;h['Authorization']='Bearer '+ANON;} return h; }
+
+  // resolve: mostrar el MIC y fijar el pais del token
+  (function(){
+    if(!TOKEN){ setMic("Paulina Muñoz"); return; } // modo demo sin token
+    fetch(EP,{method:'POST',headers:headers(),body:JSON.stringify({accion:'resolve',token:TOKEN})})
+      .then(function(r){return r.json();})
+      .then(function(d){ if(d&&d.ok){ setMic(d.mic_nombre); if(d.id_pais){ pais.value=String(d.id_pais); pais.disabled=true; sync(); } }
+        else { setMic("tu MIC"); } })
+      .catch(function(){ setMic("tu MIC"); });
+  })();
+
+  function enviar(){
+    var razon=document.getElementById('razon').value.trim();
+    var rut=ident.value.trim();
+    var clave=document.getElementById('clave').value;
+    if(!razon||!rut){ alert('Completa nombre y RUT/NIT.'); return; }
+    if(pais.value==='1' && !clave){ alert('La clave del SII es obligatoria en Chile.'); return; }
+    var btn=document.getElementById('btn'); btn.disabled=true; btn.textContent='GUARDANDO…';
+    if(!TOKEN){ // demo
+      document.getElementById('form').style.display='none';
+      document.getElementById('okBox').style.display='block'; return;
+    }
+    fetch(EP,{method:'POST',headers:headers(),body:JSON.stringify({accion:'registrar',token:TOKEN,rut:rut,razon_social:razon,clave:clave||undefined})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d&&d.ok){ document.getElementById('form').style.display='none'; document.getElementById('okBox').style.display='block'; }
+        else { alert('No se pudo registrar: '+((d&&(d.error||d.mensaje))||'error')); btn.disabled=false; btn.textContent='GUARDAR'; }
+      })
+      .catch(function(e){ alert('Error de red: '+e); btn.disabled=false; btn.textContent='GUARDAR'; });
+  }
+</script>
+</body>
+</html>
