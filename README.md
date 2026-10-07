@@ -2,7 +2,7 @@
 
 Portal público de clientes de BillCapital. Primera pieza: **registro de cliente**
 (el cliente ingresa país, RUT/NIT, razón social y clave SII). Los datos se envían a
-nuestra Edge Function `registroClientePublico`, que guarda la clave cifrada en el Vault
+nuestra Edge Function `registroClientePublico` a través de `apiGateway/portalregistro` (desde 2026-10-08; sin llave anon), que guarda la clave cifrada en el Vault
 de BillCapital y enrola al cliente en Pruff. Pensado para crecer a "sucursal virtual"
 (ver info del cliente, firma de documentos, etc.).
 
