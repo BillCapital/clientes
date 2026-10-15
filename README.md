@@ -1,35 +1,55 @@
-# clientes-portal · BillCapital
+# Portal de clientes · BillCapital
 
-Portal público de clientes de BillCapital. Primera pieza: **registro de cliente**
-(el cliente ingresa país, RUT/NIT, razón social y clave SII). Los datos se envían a
-nuestra Edge Function `registroClientePublico` a través de `apiGateway/portalregistro` (desde 2026-10-08; sin llave anon), que guarda la clave cifrada en el Vault
-de BillCapital y enrola al cliente en Pruff. Pensado para crecer a "sucursal virtual"
-(ver info del cliente, firma de documentos, etc.).
+Sitio de `clientes.billcapital.com`: el canal del **cliente final** (la empresa que cede facturas). Comparte los datos de compliance con la webapp del MIC y el panel.
+
+## Reglas
+
+- Todo en español: código, comentarios, textos y rutas.
+- **Solo front.** La lógica vive en el back y todo pasa por `apiGateway`. No se usa la llave anon.
+- **Nada en el navegador:** ni token, ni sesión, ni credencial en `localStorage` o `sessionStorage`. La sesión vive en memoria; al recargar se pide un enlace nuevo.
+- Los textos y datos por país (identificador, credencial, documentos) llegan del gateway. `src/pais.js` tiene un respaldo provisional mientras no exista `portalcliente · config`.
+- La credencial tributaria va directo al back (Vault). El front no la guarda y limpia el campo al terminar.
+
+## Uso
+
+```
+npm install
+npm run dev        # http://localhost:5174
+npm run build      # genera dist/
+```
+
+Azure Static Web Apps compila con `npm run build` y publica `dist/` (workflow en `.github/workflows`). `staticwebapp.config.json` redirige cualquier ruta a `index.html`.
+
+## Rutas
+
+| Ruta | Pantalla | Estado |
+|---|---|---|
+| `/r/<token>` y `/?t=<token>` | Registro con el enlace del MIC (`portalregistro`) | Lista |
+| `/registro` | Registro sin MIC | Pendiente del back (#272, punto 12) |
+| `/acceso` | Ingreso: pedir enlace por correo (`acceso_solicitar`) | Pendiente del back (#272, punto 2) |
+| `/acceso#t=<token>` | Enlace de un solo uso: valida con `resolver_acceso`; el canje es `acceso_canjear` | Validación lista; canje pendiente (#272, punto 1) |
+| `/identidad` | Validación de identidad (KYC) | Pendiente (#272, punto 5) |
+| `/autorizacion` | Autorización versionada | Pendiente (#272, punto 6) |
+| `/credencial` | Credencial tributaria | Pendiente (#272, punto 7) |
+| `/compliance` | Compliance (`portalcliente`, existente) | Lista de empresas lista; formulario en la siguiente entrega |
+| `/panel` | Documentos transables, cesión y ofertas | Pendiente (#272, puntos 10 y 11) |
+| `/permisos` | Mis permisos: autorización, bitácora y revocación | Pendiente (#272, puntos 6 a 8) |
+
+Cuando el back confirme cada sub-acción, se activa en `src/config.js` (`DISPONIBLE`) y se valida contra datos reales.
 
 ## Estructura
-- `index.html` — página de registro (self-contained: HTML + CSS + JS).
-- `staticwebapp.config.json` — config de Azure Static Web Apps (fallback de rutas `/r/<token>` → index.html).
 
-## Configuración antes de publicar
-En `index.html`, dentro del `<script>`:
-- `EP`  → URL de la Edge Function (ya apunta a `https://ybugxmeiwobzrdeuhlzl.supabase.co/functions/v1/registroClientePublico`).
-- `ANON` → pega aquí la **anon / publishable key** de Supabase (es pública, va en el front).
-
-## URL / token
-Cada MIC+país tiene un `registro_token` (tabla `usuario_pruff_pais`). La página lee el token de:
-- el path `/r/<token>`, o
-- el query `?t=<token>`.
-Ejemplo prod: `https://clientes.billcapital.com/r/<token>`.
-
-## Publicar en Azure Static Web Apps
-1. Sube este repo a tu cuenta (Azure DevOps o GitHub).
-2. Crea un **Static Web App** apuntando a este repo/branch → Azure arma el CI/CD.
-   - App location: `/`  ·  Output location: `/` (sitio estático, sin build).
-3. En *Custom domains* agrega `clientes.billcapital.com` y crea el CNAME en tu DNS.
-   Azure provisiona TLS automático.
-4. Cada `git push` al branch → build + deploy automático → se actualiza el subdominio.
-
-## Seguridad
-- La clave del cliente **nunca** se guarda en texto plano ni se devuelve; se cifra en el Vault.
-- La identidad del MIC sale del token de la URL, no de lo que elige el cliente.
-- Se recomienda acotar el CORS de la Edge Function a `https://clientes.billcapital.com` cuando esté productivo.
+```
+src/
+  main.js          entrada: cabecera, menú y rutas
+  config.js        URL del gateway y sub-acciones disponibles
+  gateway.js       cliente único del apiGateway
+  sesion.js        sesión solo en memoria
+  rutas.js         enrutador con la API de historial
+  pais.js          datos por país (respaldo provisional)
+  ui.js            utilidades de interfaz (texto, nunca HTML)
+  estilos.css      paleta del manual de marca
+  textos/          textos provisionales (términos)
+  vistas/          una pantalla por archivo
+public/isotipo.png
+```
