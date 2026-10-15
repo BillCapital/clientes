@@ -69,6 +69,7 @@ function mostrarEnlaceVencido(contenedor) {
       tarjeta(
         h('h1', { texto: 'Enlace no válido' }),
         h('p', { texto: 'Este enlace no es válido o ya venció. Pide uno nuevo a tu MIC.' }),
+        h('a', { href: '/', 'data-ruta': true, clase: 'boton-secundario', texto: 'Ir al inicio' }),
       ),
     ),
   );

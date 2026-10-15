@@ -165,7 +165,56 @@ body {
 
 .nota { font-size: 13px; color: var(--texto-suave); }
 form .nota, .boton + .nota { margin-top: 12px; }
-.contenido a:not(.boton-secundario) { color: var(--texto); font-weight: 700; text-underline-offset: 2px; }
+.centrada { text-align: center; }
+.contenido a:not(.boton):not(.boton-secundario) { color: var(--texto); font-weight: 700; text-underline-offset: 2px; }
+a.boton { display: block; text-align: center; text-decoration: none; }
+a.boton-secundario { display: inline-block; text-decoration: none; }
+
+/* Portada (clientes.billcapital.com sin código del MIC) */
+.portada { max-width: 880px; margin: 0 auto; }
+.portada-intro { text-align: center; max-width: 640px; margin: 8px auto 24px; }
+.portada-rotulo {
+  margin: 0 0 6px; font-size: 12px; font-weight: 800; letter-spacing: 0.4px;
+  text-transform: uppercase; color: var(--texto-suave);
+}
+.portada-intro h1 { font-size: 28px; line-height: 1.2; margin: 0 0 10px; }
+.portada-intro p { margin: 0; font-size: 16px; color: var(--texto-suave); }
+.portada-caminos { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-bottom: 16px; }
+.portada-caminos .tarjeta { display: flex; flex-direction: column; margin-bottom: 0; }
+.portada .tarjeta h2 { font-size: 18px; margin: 10px 0 6px; }
+.portada-caminos .acciones { margin-top: auto; }
+.etiqueta {
+  display: inline-block; align-self: flex-start; font-size: 12px; font-weight: 800; letter-spacing: 0.3px;
+  padding: 3px 10px; border-radius: 999px; background: var(--ok-fondo); color: var(--ok-texto);
+}
+@media (max-width: 480px) {
+  .portada-intro h1 { font-size: 24px; }
+}
+
+/* Campo para pegar el enlace del MIC */
+.form-enlace > label { display: block; font-size: 13px; font-weight: 700; margin: 4px 0 6px; }
+.fila-enlace { display: flex; gap: 8px; flex-wrap: wrap; }
+.fila-enlace input {
+  flex: 1 1 220px; min-width: 0; padding: 12px; font-size: 15px; font-family: inherit;
+  color: var(--texto); background: var(--superficie); border: 1px solid var(--linea); border-radius: 10px;
+}
+.fila-enlace input:focus { outline: none; border-color: var(--primario); box-shadow: 0 0 0 3px var(--foco); }
+.fila-enlace .boton-secundario { flex: 0 0 auto; }
+
+/* Secciones del registro sin enlace («Iniciemos») */
+.seccion { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--linea); }
+.tarjeta .seccion-titulo {
+  margin: 0; font-size: 13px; font-weight: 800; letter-spacing: 0.4px;
+  text-transform: uppercase; color: var(--texto-suave);
+}
+
+/* Asignación de MIC en el registro sin enlace */
+.bloque-mic {
+  display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; padding: 12px;
+  border-radius: 10px; background: var(--info-fondo); color: var(--info-texto);
+}
+.bloque-mic p { margin: 4px 0 0; font-size: 14px; }
+.avatar-chico { width: 38px; height: 38px; font-size: 12px; }
 
 .etiqueta-pendiente {
   display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 0.3px;

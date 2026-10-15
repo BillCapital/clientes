@@ -13,6 +13,10 @@ const RESPALDO = {
     ejemploIdentificador: '76000000-0',
     credencial: 'Clave del SII',
     pideCredencialEnRegistro: true,
+    identificadorPersona: 'RUT',
+    identificadorPersonaFrase: 'el RUT',
+    ejemploIdentificadorPersona: '12345678-9',
+    ejemploTelefono: '+56 9 1234 5678',
   },
   2: {
     id_pais: 2,
@@ -22,6 +26,10 @@ const RESPALDO = {
     ejemploIdentificador: '900000000-0',
     credencial: 'Credencial de la DIAN',
     pideCredencialEnRegistro: false,
+    identificadorPersona: 'Cédula de ciudadanía',
+    identificadorPersonaFrase: 'la cédula',
+    ejemploIdentificadorPersona: '1020304050',
+    ejemploTelefono: '+57 300 123 4567',
   },
 };
 

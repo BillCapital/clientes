@@ -24,8 +24,9 @@ Azure Static Web Apps compila con `npm run build` y publica `dist/` (workflow en
 
 | Ruta | Pantalla | Estado |
 |---|---|---|
+| `/` | Portada sin código del MIC: registrarse, ingresar o pegar el enlace del MIC. Nunca muestra un MIC por defecto | Lista |
 | `/r/<token>` y `/?t=<token>` | Registro con el enlace del MIC (`portalregistro`) | Lista |
-| `/registro` | Registro sin MIC | Pendiente del back (#272, punto 12) |
+| `/registro` | Registro sin MIC («Iniciemos»): empresa, credencial, persona de contacto y representante legal. El back asigna el MIC por defecto del país (por ahora, Christopher Lathrop) y registra la aceptación (`src/textos/asignacion-mic.js`) | Formulario listo; se activa con `DISPONIBLE.registroSinMic` cuando el back lo confirme |
 | `/acceso` | Ingreso: pedir enlace por correo (`acceso_solicitar`) | Pendiente del back (#272, punto 2) |
 | `/acceso#t=<token>` | Enlace de un solo uso: valida con `resolver_acceso`; el canje es `acceso_canjear` | Validación lista; canje pendiente (#272, punto 1) |
 | `/identidad` | Validación de identidad (KYC) | Pendiente (#272, punto 5) |
@@ -49,7 +50,7 @@ src/
   pais.js          datos por país (respaldo provisional)
   ui.js            utilidades de interfaz (texto, nunca HTML)
   estilos.css      paleta del manual de marca
-  textos/          textos provisionales (términos)
+  textos/          textos provisionales (términos y asignación de MIC)
   vistas/          una pantalla por archivo
 public/isotipo.png
 ```

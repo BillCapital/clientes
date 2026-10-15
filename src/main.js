@@ -5,6 +5,7 @@ import { h, montar } from './ui.js';
 import { ruta, iniciarRutas, navegar } from './rutas.js';
 import { haySesion, alCambiarSesion, cerrarSesion } from './sesion.js';
 import { VERSION } from './config.js';
+import { vistaInicio } from './vistas/inicio.js';
 import { vistaRegistro } from './vistas/registro.js';
 import { vistaAcceso } from './vistas/acceso.js';
 import { vistaCompliance } from './vistas/compliance.js';
@@ -59,7 +60,7 @@ function pintarMenu() {
       eventos: {
         click: () => {
           cerrarSesion();
-          navegar('/acceso');
+          navegar('/');
         },
       },
     }),
@@ -68,10 +69,12 @@ function pintarMenu() {
 alCambiarSesion(pintarMenu);
 window.addEventListener('ruta-cambiada', pintarMenu);
 
+// Con el enlace del MIC se va directo al registro; sin código se muestra la portada.
 function inicio(contenedor) {
   const token = new URLSearchParams(location.search).get('t');
   if (token) return vistaRegistro(contenedor, { token }); // enlaces antiguos: /?t=<token>
-  return navegar(haySesion() ? '/panel' : '/acceso', { reemplazar: true });
+  if (haySesion()) return navegar('/panel', { reemplazar: true });
+  return vistaInicio(contenedor);
 }
 
 ruta(/^\/$/, inicio);
