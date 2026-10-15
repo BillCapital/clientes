@@ -3,7 +3,7 @@
 
 export const GATEWAY = 'https://ybugxmeiwobzrdeuhlzl.supabase.co/functions/v1/apiGateway';
 
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 
 // Sub-acciones pedidas al back en intercambio_equipos #272. Cada una se activa aquí
 // cuando el back confirme el despliegue y se valide contra datos reales.

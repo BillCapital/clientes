@@ -18,6 +18,24 @@ const FORMATO_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TEXTO_SEGURIDAD =
   'Tus credenciales viajan cifradas y se guardan de forma segura. Solo se usan para habilitar tus documentos; nunca se comparten ni se muestran.';
 
+// Errores conocidos del back (portalregistro) → texto para el cliente.
+// Cualquier otro error (técnico, del servidor) se muestra con un mensaje genérico.
+const ERRORES_REGISTRO = [
+  { patron: /identificador invalido/i, texto: (pais) => `El ${pais.identificador} de la empresa no es válido. Revísalo e intenta de nuevo.` },
+  { patron: /rut y razon_social obligatorios/i, texto: (pais) => `Completa la razón social y el ${pais.identificador} de la empresa.` },
+  { patron: /clave del SII obligatoria/i, texto: () => 'Completa la clave del SII para continuar.' },
+  { patron: /token (invalido|no encontrado)/i, conMic: true, texto: () => 'El enlace de registro no es válido o ya no está vigente. Pídele a tu MIC que te lo envíe de nuevo.' },
+  { patron: /MIC inactivo/i, conMic: true, texto: () => 'El MIC de este enlace no está activo. Pídele que te envíe un enlace nuevo.' },
+];
+
+function mensajeErrorRegistro(error, pais, { sinMic = false } = {}) {
+  if (error.codigo === 'sin_conexion') return error.message;
+  const conocido = ERRORES_REGISTRO.find((e) => (!e.conMic || !sinMic) && e.patron.test(error.message || ''));
+  return conocido
+    ? conocido.texto(pais)
+    : 'No pudimos completar tu registro en este momento. Intenta de nuevo en unos minutos.';
+}
+
 export async function vistaRegistro(contenedor, { token = '' } = {}) {
   const tokenMic = String(token || new URLSearchParams(location.search).get('t') || '').trim().toLowerCase();
   if (!tokenMic) return vistaRegistroSinMic(contenedor);
@@ -157,7 +175,7 @@ async function pintarFormularioMic(contenedor, tokenMic, mic) {
       credencial.value = '';
       mostrarListo(contenedor, 'Recibimos tus datos de forma segura. Tu MIC continuará con el proceso.');
     } catch (error) {
-      mensajes.append(aviso('error', `No pudimos registrar tu empresa: ${error.message}`));
+      mensajes.append(aviso('error', mensajeErrorRegistro(error, pais)));
       boton.disabled = !acepto.checked;
       boton.textContent = 'Guardar';
     }
@@ -356,7 +374,7 @@ async function pintarFormularioSinMic(contenedor) {
         'Recibimos tus datos de forma segura. Te asignaremos un MIC, que se pondrá en contacto contigo para continuar.',
       );
     } catch (error) {
-      mensajes.append(aviso('error', `No pudimos registrar tu empresa: ${error.message}`));
+      mensajes.append(aviso('error', mensajeErrorRegistro(error, pais, { sinMic: true })));
       actualizarBoton();
       boton.textContent = 'Registrar mi empresa';
     }
